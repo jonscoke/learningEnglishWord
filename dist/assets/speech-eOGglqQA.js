@@ -1,0 +1,1 @@
+function c(...n){return function(s){n.some(t=>(t==null||t(s),s==null?void 0:s.defaultPrevented))}}const a=n=>{if(typeof window>"u"||!window.speechSynthesis)return;window.speechSynthesis.cancel();const e=new SpeechSynthesisUtterance(n);e.lang="en-US",e.rate=.95,window.speechSynthesis.speak(e)};export{c,a as s};
