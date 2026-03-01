@@ -17,11 +17,13 @@ const LearnPage = () => {
     changeWordBank,
     wordDeck,
     favorites,
+    focusWordId,
     isBankLoading,
     bankError,
     refreshDeck,
     toggleFavorite,
-    markWordLearned
+    markWordLearned,
+    clearFocusWord
   } = useLearning();
   const [index, setIndex] = useState(0);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -35,6 +37,18 @@ const LearnPage = () => {
       setIndex(0);
     }
   }, [index, wordDeck.length]);
+
+  useEffect(() => {
+    if (!focusWordId || !wordDeck.length) {
+      return;
+    }
+
+    const nextIndex = wordDeck.findIndex((item) => item.id === focusWordId);
+    if (nextIndex >= 0) {
+      setIndex(nextIndex);
+      clearFocusWord();
+    }
+  }, [clearFocusWord, focusWordId, wordDeck]);
 
   const currentWord = useMemo(() => wordDeck[index], [index, wordDeck]);
 

@@ -15,7 +15,7 @@ const App = () => {
     }
 
     if (activeTab === "progress") {
-      return <ProgressPage />;
+      return <ProgressPage onStartLearn={() => setActiveTab("learn")} />;
     }
 
     return <LearnPage />;

@@ -8,7 +8,7 @@ import VirtualWordList from "../components/progress/VirtualWordList";
 import { useLearning } from "../context/LearningContext";
 import { badges } from "../data/practiceQuestions";
 
-const ProgressPage = () => {
+const ProgressPage = ({ onStartLearn }) => {
   const {
     wordBanks,
     selectedWordBank,
@@ -19,6 +19,7 @@ const ProgressPage = () => {
     practiceHistory,
     progressChartData,
     learnedWords,
+    focusWordForLearning,
     isBankLoading,
     bankError
   } = useLearning();
@@ -29,8 +30,6 @@ const ProgressPage = () => {
       : Math.round(
           practiceHistory.reduce((sum, item) => sum + item.accuracy, 0) / practiceHistory.length
         );
-
-  const learnedWordItems = wordDeck.filter((word) => learnedWords.includes(word.id));
 
   return (
     <PageContainer title="Progress Dashboard" subtitle="Track your progress by selected remote word bank.">
@@ -92,7 +91,14 @@ const ProgressPage = () => {
         </SimpleGrid>
       </VStack>
 
-      <VirtualWordList words={learnedWordItems.length ? learnedWordItems : wordDeck.slice(0, 12)} />
+      <VirtualWordList
+        words={wordDeck}
+        learnedWordIds={learnedWords}
+        onLearnWord={(wordId) => {
+          focusWordForLearning(wordId);
+          onStartLearn?.();
+        }}
+      />
     </PageContainer>
   );
 };

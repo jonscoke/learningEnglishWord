@@ -50,6 +50,7 @@ export const LearningProvider = ({ children }) => {
   const [selectedWordBank, setSelectedWordBank] = useLocalStorage("lingo-selected-bank", "cet4");
   const [favoritesByBank, setFavoritesByBank] = useLocalStorage("lingo-favorites-by-bank", {});
   const [learnedByBank, setLearnedByBank] = useLocalStorage("lingo-learned-by-bank", {});
+  const [focusWordByBank, setFocusWordByBank] = useLocalStorage("lingo-focus-word-by-bank", {});
   const [practiceHistoryByBank, setPracticeHistoryByBank] = useLocalStorage(
     "lingo-practice-history-by-bank",
     {}
@@ -138,6 +139,10 @@ export const LearningProvider = ({ children }) => {
     () => getBankValue(learnedByBank, selectedWordBank, []),
     [learnedByBank, selectedWordBank]
   );
+  const focusWordId = useMemo(
+    () => getBankValue(focusWordByBank, selectedWordBank, null),
+    [focusWordByBank, selectedWordBank]
+  );
   const practiceHistory = useMemo(
     () => getBankValue(practiceHistoryByBank, selectedWordBank, []),
     [practiceHistoryByBank, selectedWordBank]
@@ -203,6 +208,17 @@ export const LearningProvider = ({ children }) => {
     [selectedWordBank, setLearnedByBank]
   );
 
+  const focusWordForLearning = useCallback(
+    (wordId) => {
+      setFocusWordByBank((prev) => updateBankValue(prev, selectedWordBank, wordId || null));
+    },
+    [selectedWordBank, setFocusWordByBank]
+  );
+
+  const clearFocusWord = useCallback(() => {
+    setFocusWordByBank((prev) => updateBankValue(prev, selectedWordBank, null));
+  }, [selectedWordBank, setFocusWordByBank]);
+
   const recordPractice = useCallback(
     ({ score, total }) => {
       const entry = {
@@ -243,6 +259,7 @@ export const LearningProvider = ({ children }) => {
       practiceQuestions,
       favorites,
       learnedWords,
+      focusWordId,
       streak,
       practiceHistory,
       progressChartData,
@@ -252,12 +269,17 @@ export const LearningProvider = ({ children }) => {
       refreshDeck,
       toggleFavorite,
       markWordLearned,
+      focusWordForLearning,
+      clearFocusWord,
       recordPractice
     }),
     [
       bankError,
       changeWordBank,
+      clearFocusWord,
       favorites,
+      focusWordForLearning,
+      focusWordId,
       isBankLoading,
       learnedWords,
       markWordLearned,
